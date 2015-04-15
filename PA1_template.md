@@ -41,7 +41,7 @@ data.withall.NA <- data[(is.na(data$steps)),] #We will use this later
 
 ## What is mean total number of steps taken per day?
 
-> 1. Calculate the total number of steps taken per day
+> Calculate the total number of steps taken per day
 
 To get the total number of steps per day, we will use `ddply` and use the `sum` function to summarize the data.
 
@@ -64,7 +64,7 @@ head(steps.per.day, 10)
 ## 10 2012-10-12       17382
 ```
 
-> 2. Make a histogram of the total number of steps taken each day
+> Make a histogram of the total number of steps taken each day
 
 Let's do a histogram of the data to get a clearer picture
 
@@ -76,10 +76,10 @@ spd.hist <- ggplot(steps.per.day, aes(x=daily_steps)) +
     
     #X axis
     xlab("Steps per Day") + 
-    theme(axis.text.x=element_text(size=14, color="black")) +
     theme(axis.title.x=element_text(vjust=-1, size=14, face="bold")) + 
+    theme(axis.text.x=element_text(size=12, color="black")) +
     
-    #Y axis label
+    #Y axis
     ylab("Count") + 
     theme(axis.text.y=element_text(size=14, color="black")) + 
     theme(axis.title.y=element_text(vjust=2, size=14, face="bold"))
@@ -88,7 +88,7 @@ spd.hist + scale_x_continuous(breaks=c(0, 5000, 10000, 15000, 20000, 25000))
 
 ![](figure/unnamed-chunk-6-1.png) 
 
-> 3. Calculate and report the mean and median of the total number of steps taken per day
+> Calculate and report the mean and median of the total number of steps taken per day
 
 Next, let's calculate the mean and median of the steps per day:
 
@@ -115,17 +115,22 @@ If we are to plot the mean and median to our histogram; visibly, the difference 
 ```r
 spd.hist.vline <- spd.hist +
     geom_vline(xintercept = spd.mean, linetype = 2, size = 1) +
-    geom_text(aes(x=spd.mean, label="mean\n", y=8), angle = 270, colour="black", size = 8) +
+    geom_text(aes(x=spd.mean, label="mean\n", y=8), angle = 270, 
+              colour="black", size = 8) +
     geom_vline(xintercept = spd.median, linetype = 2, size = 1) +
-    geom_text(aes(x=spd.median, label="median\n", y=8), angle = 90, colour="black", size = 8) +
+    geom_text(aes(x=spd.median, label="median\n", y=8), angle = 90, 
+              colour="black", size = 8) +
     scale_x_continuous(breaks=c(0, 5000, 10000, 15000, 20000, 25000))
 
 spd.hist.zoom <- spd.hist +
     geom_vline(xintercept = spd.mean, linetype = 2, size = 1) +
-    geom_text(aes(x=spd.mean, label="mean\n", y=25), angle = 270, colour="black", size = 8) +
+    geom_text(aes(x=spd.mean, label="mean\n", y=25), angle = 270, 
+              colour="black", size = 8) +
     geom_vline(xintercept = spd.median, linetype = 2, size = 1) +
-    geom_text(aes(x=spd.median, label="median\n", y=25), angle = 90, colour="black", size = 8) +
-    geom_text(aes(x=10720, label="Zoomed in", y=26), colour="black", size = 8) +
+    geom_text(aes(x=spd.median, label="median\n", y=25), angle = 90, 
+              colour="black", size = 8) +
+    geom_text(aes(x=10720, label="Zoomed in", y=26), 
+              colour="black", size = 8) +
     coord_cartesian(xlim = c(10700, 10800), ylim = c(20, 30)) +
     scale_x_continuous(breaks=seq(0, 25000, by = 25))
 
@@ -136,12 +141,13 @@ grid.arrange(spd.hist.vline, spd.hist.zoom, ncol=2)
 
 ## What is the average daily activity pattern?
 
-> 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+> Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 To get average of each interval, we'll use `ddply` function again, but this time use the `mean` function to summarize the data.
 
 ```r
-per.interval.steps <- ddply(data.without.NA, .(interval), summarize, per_interval_steps=round(mean(steps)))
+per.interval.steps <- ddply(data.without.NA, .(interval), summarize, 
+                            per_interval_steps=round(mean(steps)))
 head(per.interval.steps,10)
 ```
 
@@ -162,7 +168,7 @@ head(per.interval.steps,10)
 Plotting the resulting data, we can see the average steps per hour...
 
 ```r
-daily.pattern <- ggplot(per.interval.steps, aes(interval, per_interval_steps)) + 
+daily.pattern <- ggplot(per.interval.steps, aes(interval, per_interval_steps))+
     geom_line() +
     theme(panel.grid.minor.x=element_blank()) +
     theme(plot.margin=unit(c(1,1,1,1),"cm")) + 
@@ -180,7 +186,7 @@ daily.pattern + scale_x_continuous(breaks = seq(0, 2400, by = 100))
 
 ![](figure/unnamed-chunk-10-1.png) 
 
-> 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+> Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 ...which peaks between 0800 to 0900 hours. So let's zoom in to that part of the day
 
@@ -189,9 +195,9 @@ daily.pattern +
     scale_x_continuous(breaks = seq(0, 2400, by = 5)) + 
     coord_cartesian(xlim = c(800, 900), ylim = c(50, 250)) + 
     geom_text(data=per.interval.steps[per.interval.steps$per_interval_steps == 
-                                          max(per.interval.steps$per_interval_steps),], 
-              aes(interval, per_interval_steps, label = per_interval_steps),
-              fontface="bold", vjust=-.5, size=5)
+        max(per.interval.steps$per_interval_steps),], aes(interval, 
+        per_interval_steps, label = per_interval_steps),
+        fontface="bold", vjust=-.5, size=5)
 ```
 
 ![](figure/unnamed-chunk-11-1.png) 
@@ -199,7 +205,7 @@ I've already labeled the maximum number of steps by 5 minute interval - 206 aver
 
 ## Imputing missing values
 
-> 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with `NA`s)
+> Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with `NA`s)
 
 First, lets use the subset `data.withall.NA` that we did earlier, and count its rows
 
@@ -211,7 +217,7 @@ nrow(data.withall.NA)
 ## [1] 2304
 ```
 
-> 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated.
+> Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated.
 
 For my un-sophisticated strategy, I will substitute all NA values with the mean of the "per 5-minute interval" values that we got from our previous calculation.
 
@@ -239,7 +245,8 @@ Then do a bit of tidying up to have our new data ready to ~~marry~~ merge with t
 
 ```r
 mia.no.more <- arrange(mia.no.more, date, interval)
-mia.no.more <- subset(mia.no.more, select=c(per_interval_steps, date, interval))
+mia.no.more <- subset(mia.no.more, select=c(per_interval_steps, 
+                                            date, interval))
 colnames(mia.no.more)[1] <- "steps"
 head(mia.no.more, 10)
 ```
@@ -258,7 +265,7 @@ head(mia.no.more, 10)
 ## 10     1 2012-10-01       45
 ```
 
-> 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+> Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 Next, we now merge this new data to the old ones to fill in the missing data
 
@@ -282,12 +289,13 @@ head(imputed.data, 10)
 ## 10     1 2012-10-01       45
 ```
 
-> 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+> Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 Calculate the total number of steps per day using this newly formed dataset
 
 ```r
-imp.steps.per.day <- ddply(imputed.data, .(date), summarize, daily_steps=sum(steps))
+imp.steps.per.day <- ddply(imputed.data, .(date), summarize, 
+                           daily_steps=sum(steps))
 head(imp.steps.per.day, 10)
 ```
 
@@ -315,8 +323,8 @@ imp.spd.hist <- ggplot(imp.steps.per.day, aes(x=daily_steps)) +
     
     #X axis
     xlab("Steps per Day") + 
-    theme(axis.text.x=element_text(size=14, color="black")) +
     theme(axis.title.x=element_text(vjust=-1, size=14, face="bold")) + 
+    theme(axis.text.x=element_text(size=12, color="black")) +
     
     #Y axis
     ylab("Count") + 
@@ -352,16 +360,20 @@ imp.spd.mean
 ```r
 imp.spd.hist.vline <- imp.spd.hist +
     geom_vline(xintercept = imp.spd.mean, linetype = 2, size = 1) +
-    geom_text(aes(x=imp.spd.mean, label="mean\n", y=8), angle = 270, colour="black", size = 8) +
+    geom_text(aes(x=imp.spd.mean, label="mean\n", y=8), angle = 270, 
+              colour="black", size = 8) +
     geom_vline(xintercept = imp.spd.median, linetype = 2, size = 1) +
-    geom_text(aes(x=imp.spd.median, label="median\n", y=8), angle = 90, colour="black", size = 8) +
+    geom_text(aes(x=imp.spd.median, label="median\n", y=8), angle = 90, 
+              colour="black", size = 8) +
     scale_x_continuous(breaks=c(0, 5000, 10000, 15000, 20000, 25000))
 imp.spd.hist.zoom <- imp.spd.hist +
     geom_vline(xintercept = imp.spd.mean, linetype = 2, size = 1) +
-    geom_text(aes(x=imp.spd.mean, label="mean\n", y=33), angle = 270, colour="black", size = 8) +
+    geom_text(aes(x=imp.spd.mean, label="mean\n", y=33), angle = 270, 
+              colour="black", size = 8) +
     geom_vline(xintercept = imp.spd.median, linetype = 2, size = 1) +
-    geom_text(aes(x=imp.spd.median, label="median\n", y=33), angle = 90, colour="black", size = 8) +
-    geom_text(aes(x=10720, label="Zoomed in", y=39), colour="black", size = 8) +
+    geom_text(aes(x=imp.spd.median, label="median\n", y=33), angle = 90, 
+              colour="black", size = 8) +
+    geom_text(aes(x=10720, label="Zoomed in", y=39), colour="black", size = 8)+
     coord_cartesian(xlim = c(10700, 10800), ylim = c(30, 40)) + 
     scale_x_continuous(breaks=seq(0, 25000, by = 25))
 grid.arrange(imp.spd.hist.vline, imp.spd.hist.zoom, ncol=2)
@@ -371,15 +383,15 @@ grid.arrange(imp.spd.hist.vline, imp.spd.hist.zoom, ncol=2)
 Doesn't have a lot of difference from the initial plot (without the imputed values). 
 
 >## Analysis
->We did use the per-day-average values, as an *educated guess*, thus making the changes of the mean and median as close to the original values as possible.
+>We used the per-day-average values to fill in the `NA`s, as an *educated guess*, thus making the changes of the mean and median as close to the original values as possible.
 >
 >Therefore, imputing values reduces the margin of error and thus the data becomes more accurate.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-> 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+> Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
-For this problem, let's determine first if which date are Weekends and weekdays, and then replace `TRUE` and `FALSE` with `Weekday` or `Weekend`
+For this problem, let's determine first if which date are weekends and weekdays, and then replace `TRUE` and `FALSE` with `Weekday` or `Weekend`
 
 ```r
 imputed.data$is.weekend <- is.weekend(imputed.data$date)
@@ -402,12 +414,13 @@ head(imputed.data, 10)
 ## 10     1 2012-10-01       45    Weekday
 ```
 
-> 2. Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+> Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 To make a panel plot, process the data first by taking the mean of steps and then summarize by interval and is.weekend
 
 ```r
-imp.per.interval.steps <- ddply(imputed.data, .(interval,is.weekend), summarize, per_interval_steps=round(mean(steps)))
+imp.per.interval.steps <- ddply(imputed.data, .(interval,is.weekend), 
+        summarize, per_interval_steps=round(mean(steps)))
 head(imp.per.interval.steps, 10)
 ```
 
@@ -428,16 +441,17 @@ head(imp.per.interval.steps, 10)
 Now to the plotting!
 
 ```r
-weekly.pattern <- ggplot(imp.per.interval.steps, aes(interval, per_interval_steps)) + 
+weekly.pattern <- ggplot(imp.per.interval.steps, 
+                         aes(interval, per_interval_steps)) + 
     geom_line(color = "blue") +
     facet_wrap(~is.weekend, ncol=1) + 
     theme(plot.margin=unit(c(1,1,1,1),"cm")) + 
     
-    #add and edit x axis label
+    #X axis
     xlab("Interval") + 
     theme(axis.title.x=element_text(vjust=0, size=14, face="bold")) + 
         
-    #add and edit y axis label
+    #Y axis
     ylab("Number of Steps") + 
     theme(axis.title.y=element_text(vjust=1, size=14, face="bold")) +
     
